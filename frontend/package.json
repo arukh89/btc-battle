@@ -1,0 +1,21 @@
+{
+  "name": "tx-battle-react",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "socket.io-client": "^4.7.2",
+    "@farcaster/miniapp-sdk": "^0.0.8"
+  },
+  "devDependencies": {
+    "typescript": "5.4.2",
+    "vite": "5.1.0",
+    "@vitejs/plugin-react": "4.0.0"
+  }
+}
