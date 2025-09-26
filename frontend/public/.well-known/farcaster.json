@@ -1,0 +1,17 @@
+{
+  "accountAssociation": {
+    "header": "REPLACE_WITH_YOUR_HEADER",
+    "payload": "REPLACE_WITH_YOUR_PAYLOAD",
+    "signature": "REPLACE_WITH_YOUR_SIGNATURE"
+  },
+  "frame": {
+    "version": "1",
+    "name": "TX Battle Royale",
+    "iconUrl": "https://testtx.netlify.app/icons/icon-192.svg",
+    "homeUrl": "https://testtx.netlify.app/",
+    "imageUrl": "https://testtx.netlify.app/og.svg",
+    "buttonTitle": "\ud83c\udfae Play Now",
+    "splashImageUrl": "https://testtx.netlify.app/icons/splash.svg",
+    "splashBackgroundColor": "#1a1a1a"
+  }
+}
