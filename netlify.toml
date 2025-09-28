@@ -2,3 +2,22 @@
   base = "frontend"
   publish = "dist"
   command = "npm install --legacy-peer-deps && npm run build"
+
+[[plugins]]
+  package = "netlify-plugin-inline-critical-css"
+
+[[plugins]]
+  package = "netlify-plugin-minify-html"
+
+[[plugins]]
+  package = "netlify-plugin-cache"
+
+  [plugins.inputs]
+    paths = ["node_modules", "frontend/node_modules", "frontend/.vite"]
+
+[[plugins]]
+  package = "netlify-plugin-checklinks"
+
+  [plugins.inputs]
+    entryPoints = ["frontend/dist/index.html"]
+    recursive = true
