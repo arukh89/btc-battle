@@ -1,6 +1,7 @@
 {
   "name": "tx-battle-frontend",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -13,9 +14,8 @@
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
-    "vite": "^5.1.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.39"
+    "vite": "^5.4.0",
+    "@vitejs/plugin-react": "4.1.0",
+    "typescript": "^5.3.0"
   }
 }
