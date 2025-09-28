@@ -17,6 +17,9 @@ interface LeaderboardEntry {
 
 let farcasterSdk: any = null;
 
+// -------------------------
+// FARCASTER SDK
+// -------------------------
 async function initializeFarcasterSDK() {
   try {
     if ((window as any).farcasterSdk) {
@@ -43,14 +46,18 @@ async function callSDKReady() {
   return false;
 }
 
+// -------------------------
+// MAIN APP
+// -------------------------
 export default function App() {
+  const [fid, setFid] = useState("");
   const [players, setPlayers] = useState<Player[]>([]);
   const [messages, setMessages] = useState<string[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [prediction, setPrediction] = useState("");
+  const [chat, setChat] = useState("");
   const [status, setStatus] = useState("Initializing...");
   const [isAppReady, setIsAppReady] = useState(false);
-  const [chatInput, setChatInput] = useState("");
 
   // -------------------------
   // Splash Control
@@ -81,8 +88,9 @@ export default function App() {
   // Join game
   // -------------------------
   function joinGame() {
-    const fidInput = prompt("Masukkan FID Farcaster kamu:");
+    const fidInput = prompt("Masukkan FID Farcaster kamu:") || fid;
     if (fidInput) {
+      setFid(fidInput);
       socket.emit("join", { fid: fidInput });
     }
   }
@@ -94,6 +102,16 @@ export default function App() {
     if (prediction.trim()) {
       socket.emit("prediction", { value: prediction.trim() });
       setPrediction("");
+    }
+  }
+
+  // -------------------------
+  // Chat
+  // -------------------------
+  function sendChat() {
+    if (chat.trim()) {
+      socket.emit("chat_message", chat.trim());
+      setChat("");
     }
   }
 
@@ -142,17 +160,6 @@ export default function App() {
     } catch (err) {
       console.error("Farcaster connect error:", err);
       alert("❌ Failed to connect Farcaster wallet");
-    }
-  }
-
-  // -------------------------
-  // Chat
-  // -------------------------
-  function sendChat(e: React.FormEvent) {
-    e.preventDefault();
-    if (chatInput.trim()) {
-      socket.emit("chat_message", chatInput.trim());
-      setChatInput("");
     }
   }
 
@@ -219,40 +226,23 @@ export default function App() {
   // -------------------------
   return (
     <div className="wrap">
-      {/* Splash screen */}
-      <div id="splashScreen" className="card">
+      <div id="splashScreen">
         <h1>Loading...</h1>
         <p>{status}</p>
       </div>
 
-      {/* Game screen */}
       <div id="gameScreen" style={{ display: "none" }}>
         <header>
           <h1>TX Battle Royale</h1>
-          <button className="wallet-btn" onClick={connectFarcaster}>
-            Connect Farcaster
-          </button>
+          <p className="subtitle">{status}</p>
         </header>
 
-        <div className="card">
-          <h2>Controls</h2>
-          <div className="controls">
-            <button className="btn" onClick={joinGame}>Join Game</button>
-            <button className="btn" onClick={shareLink}>Share</button>
-            <button className="btn" onClick={prevBlock}>Prev Block</button>
-            <button className="btn" onClick={currBlock}>Current Block</button>
-          </div>
-        </div>
-
-        <div className="card">
-          <h2>Prediction</h2>
-          <input
-            type="text"
-            placeholder="e.g. 2500"
-            value={prediction}
-            onChange={(e) => setPrediction(e.target.value)}
-          />
-          <button className="btn" onClick={submitPrediction}>Submit</button>
+        <div className="controls">
+          <button className="btn" onClick={joinGame}>Join Game</button>
+          <button className="wallet-btn" onClick={connectFarcaster}>Connect Farcaster</button>
+          <button className="btn" onClick={shareLink}>Share</button>
+          <button className="btn" onClick={prevBlock}>Prev Block</button>
+          <button className="btn" onClick={currBlock}>Curr Block</button>
         </div>
 
         <div className="card">
@@ -260,8 +250,8 @@ export default function App() {
           <ul className="players-list">
             {players.map((p, idx) => (
               <li key={idx} className="player-item">
-                <img src={p.pfp_url} alt={p.username} width={32} height={32} style={{ borderRadius: "50%" }} /> @
-                {p.username} ({p.display_name})
+                <img src={p.pfp_url} alt={p.username} width={32} height={32} style={{ borderRadius: "50%" }} />
+                @{p.username} ({p.display_name})
               </li>
             ))}
           </ul>
@@ -269,38 +259,38 @@ export default function App() {
 
         <div className="card">
           <h2>Chat</h2>
-          <div className="chat-list" style={{ maxHeight: "200px", overflowY: "auto" }}>
+          <div className="chat-list">
             {messages.map((m, i) => (
               <div key={i} className="chat-item">{m}</div>
             ))}
           </div>
-          <form onSubmit={sendChat} className="controls">
-            <input
-              type="text"
-              placeholder="Say something..."
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-            />
-            <button className="btn" type="submit">Send</button>
-          </form>
+          <div className="controls">
+            <input value={chat} onChange={(e) => setChat(e.target.value)} placeholder="Type message..." />
+            <button className="btn" onClick={sendChat}>Send</button>
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>Prediction</h2>
+          <div className="controls">
+            <input value={prediction} onChange={(e) => setPrediction(e.target.value)} placeholder="Enter prediction" />
+            <button className="btn" onClick={submitPrediction}>Submit</button>
+          </div>
         </div>
 
         <div className="card">
           <h2>Leaderboard</h2>
           <ul className="leaderboard-list">
             {leaderboard.map((entry, idx) => (
-              <li key={idx} className="leader-item">
-                @{entry.username}: {entry.score}
-              </li>
+              <li key={idx} className="leader-item">@{entry.username}: {entry.score}</li>
             ))}
           </ul>
         </div>
 
         <footer>
-          <p className="muted">© 2025 TX Battle Royale</p>
-          <p>Status: {status}</p>
+          <p className="muted">Powered by Farcaster • TX Battle Royale</p>
         </footer>
       </div>
     </div>
   );
-    }
+        }
