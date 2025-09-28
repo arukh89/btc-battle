@@ -4,9 +4,10 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  root: '.',              // pastikan root project benar
+  root: '.',              
+  base: './',             // ✅ penting untuk Netlify
   build: {
-    outDir: 'dist',       // hasil build ke dist
+    outDir: 'dist',       
     emptyOutDir: true
   }
 })
