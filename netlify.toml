@@ -1,8 +1,7 @@
-# netlify.toml
 [build]
-  base    = "frontend"     # folder project kamu
+  base = "frontend"
   command = "npm run build"
-  publish = "frontend/dist" # hasil build otomatis masuk sini
+  publish = "frontend/dist"
 
-[build.environment]
-  NODE_VERSION = "20"       # lebih stabil buat Vite + React
+[functions]
+  directory = "netlify/functions"
