@@ -1,4 +1,10 @@
 [build]
   base = "frontend"
-  publish = "dist"
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm install && npm run build"
+  publish = "frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
