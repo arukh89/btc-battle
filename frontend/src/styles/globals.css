@@ -1,94 +1,144 @@
-:root {
-  --bg1: #041827;
-  --bg2: #071b2a;
-  --card: rgba(255,255,255,0.03);
-  --accent: #08bdb7;
-  --muted: #9fb0bd;
-  --text: #e7f6f6;
+/* Reset dasar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-  color: var(--text);
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #1a1a1a;
+  color: #f5f5f5;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Layout utama */
 .wrap {
-  max-width: 1180px;
-  margin: 28px auto;
-  padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 20px;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* Header */
 header {
-  grid-column: 1/-1;
+  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
 
-h1 { font-size: 20px; margin:0; }
-.subtitle { color: var(--muted); font-size: 13px; }
+header h1 {
+  font-size: 1.8rem;
+  color: #fff;
+}
 
+header .subtitle {
+  font-size: 0.95rem;
+  color: #bbb;
+}
+
+/* Card dasar */
 .card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  background: #222;
   border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-.controls { display:flex; gap:8px; align-items:center; }
-button.btn {
-  background: var(--accent);
-  color:#031417;
-  border:none;
-  padding:10px 12px;
-  border-radius:10px;
-  font-weight:700;
-  cursor:pointer;
-  transition: all 0.2s ease;
+/* Tombol */
+.btn {
+  background: #007bff;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.25s;
+  font-size: 0.95rem;
 }
-button.btn:hover { filter: brightness(1.2); }
 
-input[type="text"], input[type="number"], textarea {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.04);
-  padding: 10px;
+.btn:hover {
+  background: #0056b3;
+}
+
+/* Input */
+input[type="text"],
+input[type="number"] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #111;
+  color: white;
+}
+
+/* Status */
+.muted {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Daftar pemain */
+.players-list {
+  list-style: none;
+  margin-top: 6px;
+}
+
+.players-list li {
+  padding: 6px;
+  background: #333;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+/* Leaderboard */
+.leaderboard-list {
+  list-style: none;
+  margin-top: 6px;
+}
+
+.leaderboard-list li {
+  padding: 6px;
+  background: #333;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+/* Chat */
+.chat-list {
+  background: #111;
   border-radius: 8px;
-  width: 100%;
-  color: var(--text);
+  padding: 10px;
+  font-size: 0.9rem;
 }
 
-.players-list, .leaderboard-list, .chat-list {
-  list-style:none; padding:0; margin:0; max-height:360px; overflow:auto;
-}
-.player-item, .leader-item, .chat-item {
-  padding:10px;
-  border-bottom:1px solid rgba(255,255,255,0.02);
-}
-.muted { color: var(--muted); }
-.wallet-btn {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.06);
-  padding:8px;
-  border-radius:8px;
-  color:var(--text);
-  cursor:pointer;
+.chat-list p {
+  margin-bottom: 4px;
 }
 
+form input {
+  background: #1a1a1a;
+}
+
+/* Footer */
 footer {
-  grid-column:1/-1;
-  text-align:center;
-  color:var(--muted);
-  font-size:13px;
-  margin-top:12px;
+  grid-column: 1 / -1;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #aaa;
 }
 
-@media (max-width: 1000px) {
-  .wrap { grid-template-columns: 1fr; }
+footer a {
+  color: #4da3ff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
 }
