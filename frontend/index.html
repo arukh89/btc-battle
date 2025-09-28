@@ -11,7 +11,7 @@
       content='{
         "name": "TX Battle Royale",
         "iconUrl": "/icons/icon-192.png",
-        "homeUrl": "https://btcbattletx.netlify.app/",
+        "homeUrl": "/",
         "imageUrl": "/og.png",
         "buttonTitle": "🎮 Play Now",
         "splashImageUrl": "/icons/splash.png",
@@ -23,7 +23,7 @@
       content='{
         "name": "TX Battle Royale",
         "iconUrl": "/icons/icon-192.png",
-        "homeUrl": "https://btcbattletx.netlify.app/",
+        "homeUrl": "/",
         "imageUrl": "/og.png",
         "buttonTitle": "🎮 Play Now",
         "splashImageUrl": "/icons/splash.png",
@@ -40,7 +40,7 @@
     <meta property="og:image" content="/og.png" />
     <meta property="og:type" content="website" />
 
-    <!-- Vite injects CSS bundle automatically -->
+    <!-- Vite injects CSS + JS bundle otomatis -->
   </head>
   <body>
     <div id="root"></div>
@@ -50,8 +50,5 @@
       import { sdk } from "https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.js";
       window.farcasterSdk = sdk;
     </script>
-
-    <!-- React entrypoint -->
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
