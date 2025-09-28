@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
-import "./styles/globals.css";
 
 const socket = io((window as any).BACKEND_URL || "http://localhost:3000");
 
@@ -49,9 +48,9 @@ export default function App() {
   const [messages, setMessages] = useState<string[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [prediction, setPrediction] = useState("");
-  const [chatInput, setChatInput] = useState("");
   const [status, setStatus] = useState("Initializing...");
   const [isAppReady, setIsAppReady] = useState(false);
+  const [chatInput, setChatInput] = useState("");
 
   // -------------------------
   // Splash Control
@@ -61,6 +60,13 @@ export default function App() {
     setIsAppReady(true);
 
     await initializeFarcasterSDK();
+
+    const splash = document.getElementById("splashScreen");
+    const game = document.getElementById("gameScreen");
+    if (splash && game) {
+      splash.style.display = "none";
+      game.style.display = "block";
+    }
 
     const readySuccess = await callSDKReady();
     if (readySuccess) {
@@ -72,7 +78,7 @@ export default function App() {
   }
 
   // -------------------------
-  // Game Logic
+  // Join game
   // -------------------------
   function joinGame() {
     const fidInput = prompt("Masukkan FID Farcaster kamu:");
@@ -81,6 +87,9 @@ export default function App() {
     }
   }
 
+  // -------------------------
+  // Prediction
+  // -------------------------
   function submitPrediction() {
     if (prediction.trim()) {
       socket.emit("prediction", { value: prediction.trim() });
@@ -88,14 +97,9 @@ export default function App() {
     }
   }
 
-  function sendChat(e: React.FormEvent) {
-    e.preventDefault();
-    if (chatInput.trim()) {
-      socket.emit("chat_message", chatInput.trim());
-      setChatInput("");
-    }
-  }
-
+  // -------------------------
+  // Controls
+  // -------------------------
   function shareLink() {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
@@ -111,6 +115,9 @@ export default function App() {
     socket.emit("curr_block");
   }
 
+  // -------------------------
+  // Farcaster Connect
+  // -------------------------
   async function connectFarcaster() {
     try {
       if (!farcasterSdk) {
@@ -125,6 +132,7 @@ export default function App() {
       const { fid, username, custodyAddress } = res.user;
 
       alert(`✅ Connected as @${username}\nFID: ${fid}\nWallet: ${custodyAddress}`);
+
       socket.emit("join", { fid });
 
       const message = `Welcome to ${(window as any).APP_NAME || "TxBattle"}!\nTime: ${new Date().toISOString()}`;
@@ -138,7 +146,18 @@ export default function App() {
   }
 
   // -------------------------
-  // Socket Bindings
+  // Chat
+  // -------------------------
+  function sendChat(e: React.FormEvent) {
+    e.preventDefault();
+    if (chatInput.trim()) {
+      socket.emit("chat_message", chatInput.trim());
+      setChatInput("");
+    }
+  }
+
+  // -------------------------
+  // Socket bindings
   // -------------------------
   useEffect(() => {
     socket.on("connect", async () => {
@@ -198,102 +217,90 @@ export default function App() {
   // -------------------------
   // Render
   // -------------------------
-  if (!isAppReady) {
-    return (
-      <div id="splashScreen">
-        <h1>🚀 TX Battle Royale</h1>
-        <p className="subtitle">Loading... Please wait</p>
+  return (
+    <div className="wrap">
+      {/* Splash screen */}
+      <div id="splashScreen" className="card">
+        <h1>Loading...</h1>
         <p>{status}</p>
       </div>
-    );
-  }
 
-  return (
-    <div id="gameScreen">
-      <div className="wrap">
-        {/* Header */}
+      {/* Game screen */}
+      <div id="gameScreen" style={{ display: "none" }}>
         <header>
-          <div>
-            <h1>TX Battle Royale</h1>
-            <p className="subtitle">Predict & Compete on Bitcoin Blocks</p>
-          </div>
-          <button onClick={connectFarcaster} className="wallet-btn">
+          <h1>TX Battle Royale</h1>
+          <button className="wallet-btn" onClick={connectFarcaster}>
             Connect Farcaster
           </button>
         </header>
 
-        {/* Main game area */}
-        <main className="card">
+        <div className="card">
           <h2>Controls</h2>
           <div className="controls">
-            <button onClick={joinGame} className="btn">Join Game</button>
-            <button onClick={shareLink} className="btn">Share</button>
-            <button onClick={prevBlock} className="btn">Prev Block</button>
-            <button onClick={currBlock} className="btn">Curr Block</button>
+            <button className="btn" onClick={joinGame}>Join Game</button>
+            <button className="btn" onClick={shareLink}>Share</button>
+            <button className="btn" onClick={prevBlock}>Prev Block</button>
+            <button className="btn" onClick={currBlock}>Current Block</button>
           </div>
+        </div>
 
-          <h3>Prediction</h3>
+        <div className="card">
+          <h2>Prediction</h2>
           <input
             type="text"
+            placeholder="e.g. 2500"
             value={prediction}
             onChange={(e) => setPrediction(e.target.value)}
-            placeholder="Enter prediction..."
           />
-          <button onClick={submitPrediction} className="btn">Submit</button>
+          <button className="btn" onClick={submitPrediction}>Submit</button>
+        </div>
 
-          <h3>Players ({players.length})</h3>
+        <div className="card">
+          <h2>Players ({players.length})</h2>
           <ul className="players-list">
             {players.map((p, idx) => (
               <li key={idx} className="player-item">
-                <img
-                  src={p.pfp_url}
-                  alt={p.username}
-                  width={32}
-                  height={32}
-                  style={{ borderRadius: "50%" }}
-                />{" "}
-                @{p.username} ({p.display_name})
+                <img src={p.pfp_url} alt={p.username} width={32} height={32} style={{ borderRadius: "50%" }} /> @
+                {p.username} ({p.display_name})
               </li>
             ))}
           </ul>
-        </main>
+        </div>
 
-        {/* Sidebar */}
-        <aside>
-          <div className="card">
-            <h2>Chat</h2>
-            <div className="chat-list">
-              {messages.map((m, i) => (
-                <div key={i} className="chat-item">{m}</div>
-              ))}
-            </div>
-            <form onSubmit={sendChat}>
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Type a message..."
-              />
-            </form>
+        <div className="card">
+          <h2>Chat</h2>
+          <div className="chat-list" style={{ maxHeight: "200px", overflowY: "auto" }}>
+            {messages.map((m, i) => (
+              <div key={i} className="chat-item">{m}</div>
+            ))}
           </div>
+          <form onSubmit={sendChat} className="controls">
+            <input
+              type="text"
+              placeholder="Say something..."
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+            />
+            <button className="btn" type="submit">Send</button>
+          </form>
+        </div>
 
-          <div className="card">
-            <h2>Leaderboard</h2>
-            <ul className="leaderboard-list">
-              {leaderboard.map((entry, idx) => (
-                <li key={idx} className="leader-item">
-                  @{entry.username}: {entry.score}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
+        <div className="card">
+          <h2>Leaderboard</h2>
+          <ul className="leaderboard-list">
+            {leaderboard.map((entry, idx) => (
+              <li key={idx} className="leader-item">
+                @{entry.username}: {entry.score}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* Footer */}
         <footer>
-          <p>TX Battle Royale © 2025 - Powered by Farcaster Mini App</p>
+          <p className="muted">© 2025 TX Battle Royale</p>
+          <p>Status: {status}</p>
         </footer>
       </div>
     </div>
   );
-          }
+    }
